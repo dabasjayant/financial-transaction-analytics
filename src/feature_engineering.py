@@ -1,7 +1,5 @@
 import numpy as np
-import pandas as pd
 
-from scipy.sparse import hstack
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 class FeatureEngineer:

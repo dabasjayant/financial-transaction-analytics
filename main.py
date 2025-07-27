@@ -1,9 +1,9 @@
+import numpy as np
+
 from config.config import Config
 from src.data_preprocessing import DataPreprocessor
 from src.feature_engineering import FeatureEngineer
-# from src.model_training import ModelTrainer
-import numpy as np
-import pandas as pd
+from src.model_training import ModelTrainer
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
@@ -31,7 +31,7 @@ def main():
     text_features_sparse = feature_engineer.create_text_features(data_with_features)
 
     # --- PCA on Text Features ---
-    print(f"Original shape of text features: {text_features_sparse.shape}")
+    print(f'Original shape of text features: {text_features_sparse.shape}')
 
     # Scale text features before PCA (important for PCA)
     scaler = StandardScaler(with_mean=False)
@@ -41,7 +41,7 @@ def main():
     pca = PCA(n_components=0.95)
     text_features_pca = pca.fit_transform(text_features_scaled.toarray()) # .toarray() is needed for PCA
 
-    print(f"Shape of text features after PCA: {text_features_pca.shape}")
+    print(f'Shape of text features after PCA: {text_features_pca.shape}')
 
     # --- Combine All Features for Modeling ---
     numerical_cols = config.NUMERICAL_COLUMNS + ['year', 'month_sin', 'month_cos', 'day_sin', 'day_cos', 'day_of_week', 'is_weekend', 'days_since_start']
@@ -52,11 +52,11 @@ def main():
     X = np.hstack([X_numerical, X_categorical, text_features_pca])
     y = data_with_features[config.TARGET_COLUMN]
 
-    print(f"Final shape of combined feature matrix X: {X.shape}")
+    print(f'Final shape of combined feature matrix X: {X.shape}')
 
     # --- Model Training ---
-    # model_trainer = ModelTrainer(config)
+    model_trainer = ModelTrainer(config)
     # model_trainer.train(X, y)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

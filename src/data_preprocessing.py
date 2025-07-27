@@ -10,8 +10,8 @@ from sklearn.preprocessing import LabelEncoder
 class DataPreprocessor:
     def __init__(self, config):
         self.config = config
-        nltk.download("wordnet")
-        nltk.download("stopwords")
+        nltk.download('wordnet')
+        nltk.download('stopwords')
 
     def load_data(self):
         return pd.read_csv(self.config.DATA_PATH)
@@ -20,13 +20,13 @@ class DataPreprocessor:
         data_clean = data.dropna().copy()
         for col in self.config.NUMERICAL_COLUMNS:
             data_clean[col] = pd.to_numeric(
-                data_clean[col].apply(self._clean_num), errors="coerce"
+                data_clean[col].apply(self._clean_num), errors='coerce'
             )
             data_clean = self.handle_outliers(
                 data_clean, self.config.NUMERICAL_COLUMNS[0]
             )
         for col in self.config.DATE_COLUMN:
-            data_clean[col] = pd.to_datetime(data_clean[col], errors="coerce")
+            data_clean[col] = pd.to_datetime(data_clean[col], errors='coerce')
         for col in self.config.TEXT_COLUMNS:
             data_clean[col] = data_clean[col].apply(self._clean_text)
         data_clean[self.config.TARGET_COLUMN] = data_clean[
@@ -41,8 +41,8 @@ class DataPreprocessor:
         # Ensure text is a string
         text = str(text).lower()
         # Remove punctuation
-        text = "".join([char for char in text if char not in string.punctuation])
-        return text.replace(r"[^\\d.]", "", True)
+        text = ''.join([char for char in text if char not in string.punctuation])
+        return text.replace(r'[^\\d.]', '', True)
 
     def _clean_text(self, text):
         """
@@ -51,21 +51,21 @@ class DataPreprocessor:
         # Ensure text is a string
         text = str(text).lower()
         # Remove punctuation
-        text = "".join([char for char in text if char not in string.punctuation])
+        text = ''.join([char for char in text if char not in string.punctuation])
         # Remove stopwords
-        stop_words = set(stopwords.words("english"))
+        stop_words = set(stopwords.words('english'))
         words = text.split()
         words = [w for w in words if not w in stop_words]
         # Lemmatization
         lemmatizer = WordNetLemmatizer()
         words = [lemmatizer.lemmatize(w) for w in words]
-        return " ".join(words)
+        return ' '.join(words)
 
     def _clean_labels(self, label):
-        digits = re.findall(r"\d+", label)
+        digits = re.findall(r'\d+', label)
         if digits:
             extracted_digit = digits[0]
-            return f"category{extracted_digit}"
+            return f'category{extracted_digit}'
         else:
             return label
 
