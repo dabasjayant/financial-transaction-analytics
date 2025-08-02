@@ -3,7 +3,9 @@ import numpy as np
 from config.config import Config
 from src.data_preprocessing import DataPreprocessor
 from src.feature_engineering import FeatureEngineer
-from model import Model
+from classifier import Model
+
+from sklearn.model_selection import train_test_split
 
 def main():
     config = Config()
@@ -32,7 +34,6 @@ def main():
     text_features_pca = feature_engineer.apply_pca(text_features_sparse, 0.95)
     print(f'Shape of text features after PCA: {text_features_pca.shape}')
 
-
     # --- Combine All Features for Modeling ---
     numerical_cols = config.NUMERICAL_COLUMNS + ['year', 'month_sin', 'month_cos', 'day_sin', 'day_cos', 'day_of_week', 'is_weekend', 'days_since_start']
     X_numerical = data_with_features[numerical_cols].values
@@ -42,12 +43,19 @@ def main():
     y = data_with_features[config.TARGET_COLUMN]
     print(f'Final shape of combined feature matrix X: {X.shape}')
 
-    # --- Model Training ---
-    model = Model(config, 'random_forest')
     # Split data
-    X_train, X_test, y_train, y_test = model.train_test_split(X, y, 0.9)
-    model.train(X_train, y_train)
-    model.test(X_test, y_test)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.9, random_state=0, stratify=y)
+
+    # --- Model Training ---
+    model_name = ['random_forest']
+    for i, name in enumerate(model_name):
+        print(f'[{i}/{len(model_name)}] Using {name}')
+        model = Model(config, name)
+        print('Training...')
+        model.train(X_train, y_train)
+        print(f'Best model parameters: {model.get_best_model()}')
+        print('Testing...')
+        model.test(X_test, y_test)
 
     print('Complete!')
 
