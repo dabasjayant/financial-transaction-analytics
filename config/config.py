@@ -1,7 +1,7 @@
 # Configuration settings
 class Config:
     DATA_PATH = 'data/Challenge_Data.csv'
-    MODEL_PATH = 'models/'
+    MODEL_PATH = 'saved_models/'
     TARGET_COLUMN = 'ClassificationLabel'
     TEXT_COLUMNS = ['Col1', 'Col2', 'Col4', 'Col6']
     DATE_COLUMN = ['Col5']

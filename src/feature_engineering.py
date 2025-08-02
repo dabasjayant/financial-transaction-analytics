@@ -1,6 +1,8 @@
 import numpy as np
 
+from sklearn.decomposition import PCA
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import StandardScaler
 
 class FeatureEngineer:
     def __init__(self, config):
@@ -43,3 +45,12 @@ class FeatureEngineer:
         data['days_since_start'] = (data[column_name] - min_date).dt.days
         
         return data
+    
+    def apply_pca(self, data, variance=0.9):
+        # Scale features before PCA (important)
+        scaler = StandardScaler(with_mean=False)
+        text_features_scaled = scaler.fit_transform(data)
+
+        # Apply PCA to reduce dimensionality, retaining 95% of the variance
+        pca = PCA(n_components=variance)
+        return pca.fit_transform(text_features_scaled.toarray()) # .toarray() is needed for PCA
