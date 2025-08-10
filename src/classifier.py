@@ -1,7 +1,6 @@
 import pickle
 import os
 
-from datetime import datetime
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.metrics import accuracy_score, classification_report, f1_score, log_loss
 
@@ -18,7 +17,7 @@ class Classifier:
         model = self.classifier.get_model()
         param_grid = self.classifier.get_param_grid()
         # self.search = GridSearchCV(model, param_grid, cv=5, scoring='f1_weighted', n_jobs=-1, verbose=1)
-        self.search = RandomizedSearchCV(model, param_grid, n_iter=50, cv=5, scoring='f1_weighted', n_jobs=-1, verbose=1, random_state=self.random_state)
+        self.search = RandomizedSearchCV(model, param_grid, n_iter=20, cv=5, scoring='f1_weighted', n_jobs=-1, verbose=1, random_state=self.random_state)
 
     def train(self, X, y):
         self.search.fit(X, y)
@@ -34,12 +33,12 @@ class Classifier:
 
     def save_best_model(self):
         model = self.get_best_model()
-        base_dir = self.config.MODEL_PATH + '/' + datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        base_dir = self.config.MODEL_PATH
         try:
             os.makedirs(base_dir, exist_ok=True)
         except OSError as e:
             print(f'Error creating saved_models directory \'{base_dir}\': {e}')
-        with open(f'{base_dir}/{self.model.get_name()}.pkl', 'wb') as f:
+        with open(f'{base_dir}/{self.classifier.get_name()}.pkl', 'wb') as f:
             pickle.dump(model, f)
 
     def get_best_model(self):
