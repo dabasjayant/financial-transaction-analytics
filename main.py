@@ -1,11 +1,13 @@
 import numpy as np
+import time
+
+from imblearn.over_sampling import SMOTE
+from sklearn.model_selection import train_test_split
 
 from config.config import Config
 from src.data_preprocessing import DataPreprocessor
 from src.feature_engineering import FeatureEngineer
 from src.classifier import Classifier
-
-from sklearn.model_selection import train_test_split
 
 def main():
     config = Config()
@@ -43,16 +45,25 @@ def main():
     y = data_with_features[config.TARGET_COLUMN]
     print(f'Final shape of combined feature matrix X: {X.shape}')
 
+    # Resample imbalanced data
+    smote = SMOTE(random_state=0, k_neighbors=1)
+    X_resampled, y_resampled = smote.fit_resample(X, y)
     # Split data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.9, random_state=0, stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.1, random_state=0, stratify=y_resampled)
 
     # --- Model Training ---
     model_name = ['random_forest']
     for i, name in enumerate(model_name):
-        print(f'[{i}/{len(model_name)}] Using {name}')
+        print(f'[{i+1}/{len(model_name)}] Using {name}')
         model = Classifier(config, name)
+
         print('Training...')
+        start_time = time.perf_counter()
         model.train(X_train, y_train)
+        end_time = time.perf_counter()
+        runtime = end_time - start_time
+        print(f'Method runtime: {runtime:.6f} seconds')
+
         print(f'Best model parameters: {model.get_best_model()}')
         print('Testing...')
         model.test(X_test, y_test)

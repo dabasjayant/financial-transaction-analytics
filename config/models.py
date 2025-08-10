@@ -6,13 +6,13 @@ class RandomForest:
         self.name = 'random_forest_classifier'
         self.model = RandomForestClassifier(random_state=random_state)
         self.param_grid = {
-            'classifier__n_estimators': [100, 150, 200],
-            'classifier__criterion': ['gini', 'log_loss'],
-            'classifier__max_depth': [None, 5, 10, 20],
-            'classifier__max_features': ['sqrt', 'log2'],
-            'classifier__min_samples_split': [2, 5, 10],
-            'classifier__min_samples_leaf': [1, 2, 5],
-            'classifier__bootstrap': [True]
+            'n_estimators': [100, 150, 200],
+            'criterion': ['gini', 'log_loss'],
+            'max_depth': [None, 5, 10, 20],
+            'max_features': ['sqrt', 'log2'],
+            'min_samples_split': [2, 5, 10],
+            'min_samples_leaf': [1, 2, 5],
+            'bootstrap': [True]
         }
     
     def get_model(self):
