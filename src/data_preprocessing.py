@@ -13,8 +13,9 @@ class DataPreprocessor:
         nltk.download('wordnet')
         nltk.download('stopwords')
 
-    def load_data(self):
-        return pd.read_csv(self.config.DATA_PATH)
+    def load_data(self, path):
+        print(f'Loading data from: {path}')
+        return pd.read_csv(path)
 
     def clean_data(self, data):
         data_clean = data.dropna().copy()

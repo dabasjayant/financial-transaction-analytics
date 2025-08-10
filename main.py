@@ -1,7 +1,10 @@
+import argparse
 import numpy as np
+import sys
 import time
 
 from imblearn.over_sampling import SMOTE
+from pathlib import Path
 from sklearn.model_selection import train_test_split
 
 from config.config import Config
@@ -10,11 +13,28 @@ from src.feature_engineering import FeatureEngineer
 from src.classifier import Classifier
 
 def main():
+    '''
+    Main pipeline to run the entire data science project.
+    '''
+    parser = argparse.ArgumentParser(description='End-to-end classification pipeline.')
+    parser.add_argument(
+        '-i', '--input',
+        required=True,
+        type=str,
+        help='The relative or absolute path to the input CSV data file.'
+    )
+    args = parser.parse_args()
+    input_filepath = Path(args.input).resolve()
+    if not input_filepath.is_file():
+        print(f'Error: The file was not found at the specified path.')
+        print(f'Resolved Path: {input_filepath}')
+        sys.exit(1)
+
     config = Config()
     
     # --- Data Preprocessing ---
     data_preprocessor = DataPreprocessor(config)
-    data = data_preprocessor.load_data()
+    data = data_preprocessor.load_data(input_filepath)
     data_clean = data_preprocessor.clean_data(data)
     data_encoded = data_preprocessor.encode_labels(data_clean)
 
@@ -48,6 +68,9 @@ def main():
     # Resample imbalanced data
     smote = SMOTE(random_state=0, k_neighbors=1)
     X_resampled, y_resampled = smote.fit_resample(X, y)
+    print(f'Resampled shape of X using SMOTE: {X_resampled.shape}')
+    print(f'Class distribution (before): {y.value_counts()}')
+    print(f'Class distribution (after): {y_resampled.value_counts()}')
     # Split data
     X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.1, random_state=0, stratify=y_resampled)
 
@@ -67,6 +90,9 @@ def main():
         print(f'Best model parameters: {model.get_best_model()}')
         print('Testing...')
         model.test(X_test, y_test)
+
+        print(f"Saving the best model to '/models' directory...")
+        model.save_best_model()
 
     print('Complete!')
 
