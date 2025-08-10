@@ -6,6 +6,20 @@ This repository contains the source code for a robust, end-to-end multi-class cl
 
 ---
 
+## About the (Synthetic) Dataset
+
+The pipeline is designed to process a dataset representing transactional or event-based records. Each row corresponds to a single event, and the columns represent various attributes of that event. The synthetic data generator creates a dataset with the following structure:
+
+| Column Name         | Data Type | Description                                                                                             |
+| ------------------- | --------- | ------------------------------------------------------------------------------------------------------- |
+| `Col1` - `Col6`     | Text      | Multiple free-text fields capturing different descriptive aspects of the event, such as subjects, notes, or details. These fields contain variable-length text. |
+| `Col3`              | Numerical | A numerical feature representing a key metric of the transaction, such as a monetary value or an identifier. |
+| `Col5`              | Datetime  | The timestamp indicating when the event occurred.                                                       |
+| `Col7`              | Categorical| A low-cardinality categorical feature representing the primary type or channel of the event.          |
+| `ClassificationLabel` | **Target** | A categorical label representing the specific classification of the event. **This is the target variable for the model to predict.** The distribution of these labels is severely imbalanced. |
+
+---
+
 ## Technical Deep Dive & Skills Demonstrated
 
 This project showcases a range of advanced data science skills and best practices critical for a professional data scientist role.
@@ -77,10 +91,13 @@ python generate_dummy_data.py
 This will create a `Sample_Data.csv` file inside the `/data` directory.
 
 ### 4. Run the Pipeline
-To execute the entire data processing, feature engineering, and model training pipeline, run the `main.py` script from the root directory:
+
+To execute the entire data processing, feature engineering, and model training pipeline, run the `main.py` script from the root directory. **You must provide a relative or absolute path to the input data file using the `-i` or `--input` argument.**
+
+**Example:**
 
 ```bash
-python main.py
+python main.py -i data/Sample_Data.csv
 ```
 
 The script will output the progress of each stage of the pipeline. Upon completion, it will print the model evaluation results (including the final F1-score and classification report) and display a confusion matrix plot. The final trained model object will be saved as `random_forest_model.pkl` in a newly created `/models` directory.
