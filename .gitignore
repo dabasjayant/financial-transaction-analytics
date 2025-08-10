@@ -208,5 +208,6 @@ __marimo__/
 
 # Data files
 data/*.csv
+models/*
 
 .DS_Store
