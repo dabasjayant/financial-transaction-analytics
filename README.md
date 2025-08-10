@@ -84,3 +84,49 @@ python main.py
 ```
 
 The script will output the progress of each stage of the pipeline. Upon completion, it will print the model evaluation results (including the final F1-score and classification report) and display a confusion matrix plot. The final trained model object will be saved as `random_forest_model.pkl` in a newly created `/models` directory.
+
+## Test Results
+
+```bash
+> python main.py
+[nltk_data] Downloading package wordnet to
+[nltk_data]     ~/nltk_data...
+[nltk_data]   Package wordnet is already up-to-date!
+[nltk_data] Downloading package stopwords to
+[nltk_data]     ~/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+Original shape of text features: (5746, 6826)
+Shape of text features after PCA: (5746, 4393)
+Final shape of combined feature matrix X: (5746, 4403)
+[1/1] Using random_forest
+Training...
+Fitting 5 folds for each of 50 candidates, totalling 250 fits
+
+Method runtime: 2540.372555 seconds
+Best model parameters: RandomForestClassifier(criterion='log_loss', min_samples_split=5,
+                       n_estimators=150, random_state=0)
+Testing...
+Accuracy: 0.9977011494252873
+F1 Score: 0.9977011360367974
+Log Loss: 0.03417957842435477
+Classification report: 
+              precision    recall  f1-score   support
+
+           0       1.00      0.99      0.99       508
+           1       0.99      1.00      0.99       507
+           2       1.00      1.00      1.00       507
+           3       1.00      1.00      1.00       508
+           4       1.00      1.00      1.00       508
+           5       1.00      1.00      1.00       507
+
+    accuracy                           1.00      3045
+   macro avg       1.00      1.00      1.00      3045
+weighted avg       1.00      1.00      1.00      3045
+
+Complete!
+```
+
+## TODO
+
+1. Upload python notebook for data exploration and playground.
+2. Migrate visualization class from python notebook to native python scripts
